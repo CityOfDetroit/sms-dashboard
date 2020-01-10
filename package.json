@@ -1,0 +1,36 @@
+{
+  "name": "sms-dashboard",
+  "version": "0.0.1",
+  "description": "Admin dashboard for sending SMS message.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CityOfDetroit/sms-dashboard.git"
+  },
+  "keywords": [
+    "sms",
+    "dashboard",
+    "alerts",
+    "js",
+    "react"
+  ],
+  "bugs": {
+    "url": "https://github.com/CityOfDetroit/sms-dashboard/issues"
+  },
+  "homepage": "https://github.com/CityOfDetroit/sms-dashboard#readme",
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
+  "author": "Edgar Montes",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.24.4"
+  }
+}
