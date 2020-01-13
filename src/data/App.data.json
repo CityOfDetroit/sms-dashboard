@@ -1,0 +1,45 @@
+{
+    "services" : [
+        {
+            "id"            : "elections",
+            "name"          : "Elections",
+            "permissions"   : true,
+            "api"           : "https://apis.detroitmi.gov/messenger/clients/1/subscribe/",
+            "selectors"     : [
+                {
+                    "name"          : "3rd Party Groups",
+                    "type"          : "radio",
+                    "valuesSource"  : "static",
+                    "values"        : [
+                        {
+                            "name" : "--- Please select group list ---",
+                            "value": ""
+                        },
+                        {
+                            "name" : "Test Group 1",
+                            "value": "test-group-1"
+                        },
+                        {
+                            "name" : "Test Group 2",
+                            "value": "test-group-2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id"            : "dpw",
+            "name"          : "Waste Pick Up",
+            "permissions"   : true,
+            "api"           : "https://apis.detroitmi.gov/messenger/clients/1/subscribe/",
+            "selectors"     : [
+                {
+                    "name"          : "3rd Party Groups",
+                    "type"          : "dataList",
+                    "valuesSource"  : "dynamic",
+                    "values"        : "https://gis.detroitmi.gov/arcgis/rest/services/DPW/DPW_Services/MapServer/1/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&f=geojson"
+                }
+            ]
+        }
+    ]
+}
