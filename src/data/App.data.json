@@ -5,7 +5,7 @@
             "name"          : "Elections",
             "permissions"   : true,
             "api"           : "https://apis.detroitmi.gov/messenger/clients/1/subscribe/",
-            "selectors"     : [
+            "filters"     : [
                 {
                     "name"          : "3rd Party Groups",
                     "type"          : "radio",
@@ -32,7 +32,7 @@
             "name"          : "Waste Pick Up",
             "permissions"   : true,
             "api"           : "https://apis.detroitmi.gov/messenger/clients/1/subscribe/",
-            "selectors"     : [
+            "filters"     : [
                 {
                     "name"          : "3rd Party Groups",
                     "type"          : "dataList",

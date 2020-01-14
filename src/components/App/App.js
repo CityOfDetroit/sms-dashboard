@@ -5,7 +5,7 @@ import data from '../../data/App.data.json';
 function App() {
     // Declare a new state variable, which we'll call "count"
   const [service, setService] = useState(null);
-  const [user, setUser] = useState({'id': 'edgar', 'permissions': ['elections']});
+  const [user, setUser] = useState({'id': 'edgar', 'permissions': ['elections', 'dpw']});
 
   const buildServices = () => {
     const markup = data.services.map((service) =>
@@ -19,25 +19,30 @@ function App() {
   }
 
   const buildGroupFilters = () => {
-
-    const markup = <fieldset>
-    <label htmlFor="group" className="required-field">Group</label>
-    <select id="group" required>
-    <option value="">--Please choose a group--</option>
-    <option value="all">All</option>
-    <option value="list-1">List 1</option>
-    <option value="list-2">List 2</option>
-    </select>
-  </fieldset>;
-  return markup;
+    const markup = data.services.map((s) =>
+    (service == s.id) ? <fieldset>{buildFilter(s)}</fieldset> : ''
+    );
+    return markup;
   }
 
-  const buildStaticFilters = () => {
+  const buildFilter = (s) => {
+    console.log(s);
+    const markup = s.filters.map((filter) =>
+    (filter.valuesSource == 'static') ? buildStaticFilters(filter) : buildDynamicFilters(filter)
+    );
+    return markup;
+  }
 
+  const buildStaticFilters = (filter) => {
+    const markup = filter.values.map((value) =>
+      <option value="list-1">List 1</option>
+    );
+    return markup;
   }
 
   const buildDynamicFilters = () => {
-    
+    const markup = <p>Dyanic call</p>;
+    return markup;
   }
 
   return (
@@ -45,10 +50,10 @@ function App() {
       <p>{document.title}</p>
      <form>
         <fieldset>
-          <label htmlFor="services" className="required-field">Service</label>
-          <select id="services" onChange={handleServiceChange} required>
-          <option value="">--Please choose a service--</option>
-          {buildServices()}
+          <label htmlFor="services" className="required-field">Select SMS Service</label>
+          <select id="services" required onChange={handleServiceChange}>
+            <option value="">--Please choose a service--</option>
+            {buildServices()}
           </select>
         </fieldset>
         {(service) ? buildGroupFilters() : ""}
