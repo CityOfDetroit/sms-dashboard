@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/CityOfDetroit/sms-dashboard#readme",
   "scripts": {
-    "start": "parcel src/index.html",
+    "start": "parcel src/index.html --https --no-cache",
     "test": "jest"
   },
   "author": "Edgar Montes",

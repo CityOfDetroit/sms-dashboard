@@ -1,27 +1,27 @@
 {
     "services" : [
         {
-            "id"            : "elections",
-            "name"          : "Elections",
+            "id"            : "census",
+            "name"          : "Census",
             "permissions"   : true,
-            "api"           : "https://apis.detroitmi.gov/messenger/clients/1/subscribe/",
+            "api"           : "https://apis.detroitmi.gov/messenger/notifications/4/messages/",
             "filters"     : [
                 {
-                    "name"          : "3rd Party Groups",
-                    "type"          : "radio",
+                    "name"          : "Select who should get this message:",
+                    "id"            : "groups",
+                    "description"   : "List of subscribers that will be used for the message.",
+                    "type"          : "select",
                     "valuesSource"  : "static",
                     "values"        : [
                         {
-                            "name" : "--- Please select group list ---",
-                            "value": ""
+                            "name"  : "--- Please select group list ---",
+                            "value" : "",
+                            "key"   : "groups-0"
                         },
                         {
-                            "name" : "Test Group 1",
-                            "value": "test-group-1"
-                        },
-                        {
-                            "name" : "Test Group 2",
-                            "value": "test-group-2"
+                            "name" : "Everyone",
+                            "value": "4",
+                            "key"   : "groups-1"
                         }
                     ]
                 }
@@ -35,6 +35,7 @@
             "filters"     : [
                 {
                     "name"          : "3rd Party Groups",
+                    "id"            : "groups",
                     "type"          : "dataList",
                     "valuesSource"  : "dynamic",
                     "values"        : "https://gis.detroitmi.gov/arcgis/rest/services/DPW/DPW_Services/MapServer/1/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&f=geojson"
