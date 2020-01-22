@@ -1,17 +1,21 @@
 import React, { useState }from 'react';
 import './Panel.scss';
+import Connector from '../Connector/Connector';
 import data from '../../data/App.data.json';
 
 function Panel(props) {
-  // Declare a new state variable, which we'll call "count"
-  const [service, setService]     = useState();
-  const [filters, setFilters]     = useState();
-  const [message, setMessage]     = useState();
-  const [date, setDate]           = useState();
-  const [spMessage, setspMessage] = useState();
-  const [arMessage, setarMessage] = useState();
-  const [bnMessage, setbnMessage] = useState();
-  const [user, setUser] = useState({'id': 'edgar', 'permissions': ['census', 'dpw']});
+  // Declare a new state variables
+  const [service, setService]       = useState();
+  const [filters, setFilters]       = useState();
+  const [message, setMessage]       = useState();
+  const [date, setDate]             = useState();
+  const [spMessage, setspMessage]   = useState();
+  const [arMessage, setarMessage]   = useState();
+  const [bnMessage, setbnMessage]   = useState();
+  const [phone, setPhone]           = useState();
+  const [lang, setLang]             = useState();
+  const [address, setAddress]       = useState();
+  const [user, setUser]             = useState({'id': 'edgar', 'permissions': ['census', 'dpw']});
 
   const buildServices = () => {
     const markup = data.services.map((service) =>
@@ -52,27 +56,25 @@ function Panel(props) {
         setbnMessage(ev.target.value);
         break;
 
+      case 'phone':
+        setPhone(ev.target.value);
+        break;
+
+      case 'lang':
+        setLang(ev.target.value);
+        break;
+
       case 'msg-form':
         ev.preventDefault(); 
         let param = {
           "day": date
         };
-        let request = new Request(`https://apis.detroitmi.gov/messenger/clients/${filters.groups}/notifications/`, {
-          method: 'POST',
-          body: JSON.stringify(param),
-          headers: new Headers({
-            'Content-type': 'application/json' 
-          }),
-          mode: 'cors',
-          cache: 'default'
-        });
-        fetch(request)
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+        Connector.start('post',`https://apis.detroitmi.gov/messenger/clients/${filters.groups}/notifications/`, param, (e)=>{console.log(`oh no this happend: ${e}`)}, (e)=>{console.log(`oh no this happend: ${e}`)});
+        break;
+    
+      case 'num-form':
+        ev.preventDefault();
+        console.log('phone added');
         break;
     
       default:
@@ -213,7 +215,34 @@ function Panel(props) {
         break;
         
       case 'num':
-        markup = <h1>Add Number</h1>
+        markup = <form id="num-form" onSubmit={handleChange}>
+            <fieldset>
+            <label htmlFor="services" className="required-field">Select SMS Service</label>
+            <select id="services" required aria-required="true" aria-describedby="Service client used to send message." onChange={handleChange}>
+                <option value="">--Please choose a service--</option>
+                {buildServices()}
+            </select>
+            </fieldset>
+            {(service) ? buildGroupFilters() : ""}
+            <fieldset>
+                <label htmlFor="phone" className="required-field">Phone</label>
+                <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Ex. 313-333-3333" aria-describedby="Number of subscriber." aria-required="true" required onChange={handleChange}></input>
+                <label htmlFor="lang" className="required-field">Language</label>
+                <select id="lang" required aria-required="true" aria-describedby="Language prefered by the subscriber." onChange={handleChange}>
+                    <option value="">--Please choose a prefer language--</option>
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="ar">Arabic</option>
+                    <option value="bn">Bengal</option>
+                </select>
+                <label htmlFor="address" className="required-field">Address</label>
+                <input type="text" id="address" name="address" placeholder="Ex. 1300 3rd st" aria-describedby="Address of subscriber." onChange={handleChange}></input>
+            </fieldset>
+            <fieldset>
+                <button type="submit">Send</button>
+                <button type="clear">Clear</button>
+            </fieldset>
+        </form>
         break;
     
       default:
