@@ -2,8 +2,8 @@ import React, { useState }from 'react';
 import './Panel.scss';
 import data from '../../data/App.data.json';
 
-function Panel() {
-    // Declare a new state variable, which we'll call "count"
+function Panel(props) {
+  // Declare a new state variable, which we'll call "count"
   const [service, setService]     = useState();
   const [filters, setFilters]     = useState();
   const [message, setMessage]     = useState();
@@ -170,8 +170,15 @@ function Panel() {
     return `${year}-${month}-${day}`;
   }
 
-  return (
-      <form id="msg-form" onSubmit={handleChange}>
+  const buildPanel = () => {
+    let markup;
+    switch (props.type) {
+      case 'home':
+        markup = <h1>Home</h1>
+        break;
+        
+      case 'msg':
+        markup = <form id="msg-form" onSubmit={handleChange}>
         <fieldset>
           <label htmlFor="services" className="required-field">Select SMS Service</label>
           <select id="services" required aria-required="true" aria-describedby="Service client used to send message." onChange={handleChange}>
@@ -202,7 +209,24 @@ function Panel() {
         <button type="submit">Send</button>
         <button type="clear">Clear</button>
         </fieldset>
-     </form>
+        </form>
+        break;
+        
+      case 'num':
+        markup = <h1>Add Number</h1>
+        break;
+    
+      default:
+        break;
+    }
+    
+    return markup;
+  }
+
+  return (
+    <article id="panel">
+        {buildPanel()}
+    </article>
   );
 }
 

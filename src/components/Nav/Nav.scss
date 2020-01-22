@@ -1,0 +1,16 @@
+@import "../../colors.scss";
+@import "../../../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
+
+nav{
+    width: 20em;
+    max-width: 100%;
+    background-color: $color-1;
+    color: $white;
+    padding: 1em;
+
+    ul{
+        list-style: none;
+        padding: 0;
+        margin: 0
+    }
+}

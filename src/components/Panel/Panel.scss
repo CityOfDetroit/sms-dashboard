@@ -1,0 +1,27 @@
+@import "../../colors.scss";
+
+#panel{
+    flex: 1;
+    padding: 1em;
+    color: $color-1;
+    background-color: $color-2;
+}
+
+form{
+    
+
+    fieldset{
+        border: none;
+        margin-bottom: .5em;
+
+        label{
+            font-weight: bold;
+            display: block;
+        }
+        
+        label.required-field:after{
+            color: $color-4;
+            content: " *";
+        }
+    }
+}

@@ -4,11 +4,12 @@ import Nav from '../Nav/Nav';
 import Panel from '../Panel/Panel';
 
 function App() {
+  const [nav, setNav]     = useState('msg');
 
   return (
     <section className="App">
-      <Nav></Nav>
-      <Panel></Panel>
+      <Nav state={{ nav: [nav, setNav] }}></Nav>
+      <Panel type={nav}></Panel>
     </section>
   );
 }
