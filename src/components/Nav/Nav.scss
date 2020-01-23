@@ -6,11 +6,48 @@ nav{
     max-width: 100%;
     background-color: $color-1;
     color: $white;
-    padding: 1em;
 
     ul{
         list-style: none;
         padding: 0;
-        margin: 0
+        margin: 0;
+
+        li{
+            border-top: solid .01em $color-2;
+
+            button{
+                cursor: pointer;
+                padding: 1em;
+                background-color: transparent;
+                color: #fff;
+                font-size: 1em;
+                border: none;
+                width: 100%;
+                text-align: left;
+
+                i{
+                    margin-right: 1em;
+                    font-size: 1.25em;
+                    font-weight: bold;
+                }
+            }
+
+            button:hover, button.active{
+                background-color: $color-2;
+                color: $color-1;
+            }
+
+            button:active{
+                outline: none;
+            }
+        }
+
+        li:first-child{
+            border-top: none;
+        }
+
+        li:last-child{
+            border-bottom: solid .01em $color-2;
+        }
     }
 }

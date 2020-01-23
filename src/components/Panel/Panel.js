@@ -74,7 +74,12 @@ function Panel(props) {
     
       case 'num-form':
         ev.preventDefault();
-        console.log('phone added');
+        param = {
+          "phone_number": phone,
+          "lang": lang
+        };
+        (address) ? param['address'] = address : '';
+        Connector.start('post',`https://apis.detroitmi.gov/messenger/clients/${filters.groups}/subscribe/`, param, (e)=>{console.log(`oh no this happend: ${e}`)}, (e)=>{console.log(`oh no this happend: ${e}`)});
         break;
     
       default:
@@ -176,11 +181,14 @@ function Panel(props) {
     let markup;
     switch (props.type) {
       case 'home':
-        markup = <h1>Home</h1>
+        markup = <article>
+          <h1>Welcome to the City of Detroit SMS Dashboard</h1>
+          </article>
         break;
         
       case 'msg':
         markup = <form id="msg-form" onSubmit={handleChange}>
+          <h1>Send Message</h1>
         <fieldset>
           <label htmlFor="services" className="required-field">Select SMS Service</label>
           <select id="services" required aria-required="true" aria-describedby="Service client used to send message." onChange={handleChange}>
@@ -216,6 +224,7 @@ function Panel(props) {
         
       case 'num':
         markup = <form id="num-form" onSubmit={handleChange}>
+            <h1>Add Number</h1>
             <fieldset>
             <label htmlFor="services" className="required-field">Select SMS Service</label>
             <select id="services" required aria-required="true" aria-describedby="Service client used to send message." onChange={handleChange}>
