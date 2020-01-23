@@ -30,5 +30,14 @@ form{
             color: $color-4;
             content: " *";
         }
+
+        span{
+            cursor: pointer;
+            background-color: $color-3;
+            padding: .5em;
+            margin-left: 1em;
+            position: relative; 
+            top: -.75em;
+        }
     }
 }

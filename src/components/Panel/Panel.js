@@ -3,6 +3,7 @@ import './Panel.scss';
 import Connector from '../Connector/Connector';
 import Geocoder from '../Geocoder/Geocoder';
 import data from '../../data/App.data.json';
+import token from '../../../private/token.json';
 
 function Panel(props) {
   // Declare a new state variables
@@ -17,6 +18,12 @@ function Panel(props) {
   const [lang, setLang]             = useState();
   const [address, setAddress]       = useState('1301 3rd Ave');
   const [user, setUser]             = useState({'id': 'edgar', 'permissions': ['census', 'dpw']});
+  const {
+    loader: [loader, setLoader]
+  } = {
+    loader: useState(0),
+    ...(props.state || {})
+  };
 
   const buildServices = () => {
     const markup = data.services.map((service) =>
@@ -58,6 +65,7 @@ function Panel(props) {
         break;
 
       case 'phone':
+        phoneFormater(ev);
         setPhone(ev.target.value);
         break;
 
@@ -66,21 +74,24 @@ function Panel(props) {
         break;
 
       case 'msg-form':
-        ev.preventDefault(); 
+        ev.preventDefault();
+        setLoader('active'); 
         let param = {
+          "clients": [filters.groups],
           "day": date
         };
-        Connector.start('post',`https://apis.detroitmi.gov/messenger/clients/${filters.groups}/notifications/`, param, (e)=>{console.log(`oh no this happend: ${e}`)}, (e)=>{console.log(`oh no this happend: ${e}`)});
+        Connector.start('post','https://apis.detroitmi.gov/messenger/notifications/', param, (e)=>{(e.status >= 200 && e.status < 300) ? createNewMessage(e) : errorPost(e)}, (e)=>{errorPost(e)});
         break;
     
       case 'num-form':
         ev.preventDefault();
+        setLoader('active');
         param = {
           "phone_number": phone,
           "lang": lang
         };
         (address) ? param['address'] = address : '';
-        Connector.start('post',`https://apis.detroitmi.gov/messenger/clients/${filters.groups}/subscribe/`, param, (e)=>{console.log(`oh no this happend: ${e}`)}, (e)=>{console.log(`oh no this happend: ${e}`)});
+        Connector.start('post',`https://apis.detroitmi.gov/messenger/clients/${filters.groups}/subscribe/`, param, (e)=>{(e.status >= 200 && e.status < 300) ? successPost(e) : errorPost(e)}, (e)=>{errorPost(e)});
         break;
     
       default:
@@ -93,6 +104,55 @@ function Panel(props) {
         break;
     }
     
+  }
+
+  const createNewMessage = (resp) => {
+    resp.json().then(data =>{
+        console.log(data);
+        data.clients.forEach((client) => {
+            switch (true) {
+                case message != undefined:
+                    sendMessage(client, 'en', message);
+                    break;
+
+                case spMessage != undefined:
+                    sendMessage(client, 'es', spMessage);
+                    break;
+
+                case arMessage != undefined:
+                    sendMessage(client, 'ar', arMessage);
+                    break;
+
+                case bnMessage != undefined:
+                    sendMessage(client, 'bn', bnMessage);
+                    break;
+            
+                default:
+                    break;
+            }
+        });
+    })
+    .catch((error) => {
+        error(error);
+    });
+  }
+
+  const sendMessage = (client, language, msg) => {
+    console.log(`sending message: ${msg}`);
+    let param = {
+        "lang": language,
+        "message": msg
+    }
+    Connector.start('post', `https://apis.detroitmi.gov/messenger/notifications/${client}/messages/`, param, (e)=>{(e.status >= 200 && e.status < 300) ? successPost(e) : errorPost(e)}, (e)=>{errorPost(e)});
+  }
+
+  const successPost = (id) => {
+    setLoader('');
+  }
+
+  const errorPost = (id) => {
+    setLoader('');
+    console.log(id);
   }
 
   const buildGroupFilters = () => {
@@ -178,13 +238,91 @@ function Panel(props) {
     return `${year}-${month}-${day}`;
   }
 
+  const phoneFormater = (obj) => {
+    var numbers = obj.target.value.replace(/\D/g, ''),
+    char = {0:'(',3:')',6:'-'};
+    obj.target.value = '';
+    for (var i = 0; i < numbers.length; i++) {
+        obj.target.value += (char[i]||'') + numbers[i];
+    }
+  }
+
+  const clearForm = (ev) =>{
+    switch (ev.target.parentElement.parentElement.id) {
+        case 'msg-form':
+            setService(undefined);
+            setFilters(undefined);
+            setDate(undefined);
+            setMessage(undefined);
+            setspMessage(undefined);
+            setarMessage(undefined);
+            setbnMessage(undefined);
+            break;
+
+        case 'num-form':
+            setService(undefined);
+            setFilters(undefined);
+            setPhone(undefined);
+            setLang(undefined);
+            setAddress(undefined);
+            break;
+    
+        default:
+            break;
+    }
+  }
+
+  const translateTxt = () => {
+    setLoader('active');
+    let param = {
+        "text": message,
+        "auth_token": token.token 
+    }
+    Connector.start('post', 'https://apis.detroitmi.gov/website_data/translations/', param, (e)=>{(e.status >= 200 && e.status < 300) ? loadTranslations(e) : errorPost(e)}, (e)=>{errorPost(e)});
+  }
+
+  const loadTranslations = (resp) => {
+    resp.json().then(data =>{
+        setspMessage(data.es);
+        setarMessage(data.ar);
+        setbnMessage(data.bn);
+        setLoader('');
+    })
+    .catch((error) => {
+        error(error);
+        setLoader('');
+    });
+  }
+
+  const getTranslation = (id) => {
+    let tmpValue;
+    switch (id) {
+        case 'sp':
+            (spMessage != undefined) ? tmpValue = spMessage : tmpValue = '';
+            break;
+
+        case 'ar':
+            (arMessage != undefined) ? tmpValue = arMessage : tmpValue = '';
+            break;
+
+        case 'bn':
+            (bnMessage != undefined) ? tmpValue = bnMessage : tmpValue = '';
+            break;
+    
+        default:
+            break;
+    }
+    return tmpValue;
+  }
+
   const buildPanel = () => {
     let markup;
     switch (props.type) {
       case 'home':
         markup = <article>
-          <h1>Welcome to the City of Detroit SMS Dashboard</h1>
-          </article>
+            <h1>Welcome to the City of Detroit SMS Dashboard</h1>
+            <p>Hi {user.id}!</p>
+        </article>
         break;
         
       case 'msg':
@@ -209,16 +347,17 @@ function Panel(props) {
         <fieldset>
           <label htmlFor="en-msg" className="required-field">Message (Eng)</label>
           <textarea id="en-msg" type="text" aria-describedby="Message that users will receive." aria-required="true" required onChange={handleChange}></textarea>
+          <span onClick={translateTxt}><i className="fas fa-language"></i> Translate</span> 
           <label htmlFor="sp-msg">Spanish Translation</label>
-          <textarea id="sp-msg" type="text" aria-describedby="Message that spanish speaking users will receive." onChange={handleChange}></textarea>
+          <textarea id="sp-msg" value={getTranslation('sp')} type="text" aria-describedby="Message that spanish speaking users will receive." onChange={handleChange}></textarea>
           <label htmlFor="ar-msg">Arabic Translation</label>
-          <textarea id="ar-msg" type="text" aria-describedby="Message that arabic speaking users will receive." onChange={handleChange}></textarea>
+          <textarea id="ar-msg" value={getTranslation('ar')} type="text" aria-describedby="Message that arabic speaking users will receive." onChange={handleChange}></textarea>
           <label htmlFor="bn-msg">Bengal Translation</label>
-          <textarea id="bn-msg" type="text" aria-describedby="Message that bengali speaking users will receive." onChange={handleChange}></textarea>
+          <textarea id="bn-msg" value={getTranslation('bn')} type="text" aria-describedby="Message that bengali speaking users will receive." onChange={handleChange}></textarea>
         </fieldset>
         <fieldset>
         <button type="submit">Send</button>
-        <button type="reset">Clear</button>
+        <button type="reset" onClick={clearForm}>Clear</button>
         </fieldset>
         </form>
         break;
@@ -236,7 +375,7 @@ function Panel(props) {
             {(service) ? buildGroupFilters() : ""}
             <fieldset>
                 <label htmlFor="phone" className="required-field">Phone</label>
-                <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Ex. 313-333-3333" aria-describedby="Number of subscriber." aria-required="true" required onChange={handleChange}></input>
+                <input type="tel" id="phone" name="phone" pattern="\([0-9]{3}\)[0-9]{3}-[0-9]{4}" placeholder="Ex. (313)333-3333" aria-describedby="Number of subscriber." aria-required="true" required onChange={handleChange}></input>
                 <label htmlFor="lang" className="required-field">Language</label>
                 <select id="lang" required aria-required="true" aria-describedby="Language prefered by the subscriber." onChange={handleChange}>
                     <option value="">--Please choose a prefer language--</option>
@@ -249,7 +388,7 @@ function Panel(props) {
             <Geocoder state={{ address: [address, setAddress] }}></Geocoder>
             <fieldset>
                 <button type="submit">Send</button>
-                <button type="reset">Clear</button>
+                <button type="reset" onClick={clearForm}>Clear</button>
             </fieldset>
         </form>
         break;

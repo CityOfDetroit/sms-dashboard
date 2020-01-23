@@ -43,8 +43,8 @@ function Geocoder(props) {
   }
 
   const buildOptions = () => {
-    const markup = sugg.map((item) =>
-        <option value={item.address}></option>
+    const markup = sugg.map((item, key) =>
+        <option key={key} value={item.address}></option>
     );
     return markup;
   }
