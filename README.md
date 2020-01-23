@@ -32,6 +32,11 @@ Please make sure these are installed locally
     ```
     $ npm test
     ```
+
+5. Run build.
+    ```
+    $ npm build
+    ```
 ## Resources
 
 * SLACK - #webteam

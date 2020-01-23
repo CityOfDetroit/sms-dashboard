@@ -21,7 +21,8 @@
   "homepage": "https://github.com/CityOfDetroit/sms-dashboard#readme",
   "scripts": {
     "start": "parcel src/index.html --https --no-cache",
-    "test": "jest"
+    "test": "jest",
+    "build": "parcel build src/index.html --no-cache --public-url '.'"
   },
   "author": "Edgar Montes",
   "license": "MIT",
