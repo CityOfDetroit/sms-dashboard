@@ -1,6 +1,7 @@
 import React, { useState }from 'react';
 import './Panel.scss';
 import Connector from '../Connector/Connector';
+import Geocoder from '../Geocoder/Geocoder';
 import data from '../../data/App.data.json';
 
 function Panel(props) {
@@ -14,7 +15,7 @@ function Panel(props) {
   const [bnMessage, setbnMessage]   = useState();
   const [phone, setPhone]           = useState();
   const [lang, setLang]             = useState();
-  const [address, setAddress]       = useState();
+  const [address, setAddress]       = useState('1301 3rd Ave');
   const [user, setUser]             = useState({'id': 'edgar', 'permissions': ['census', 'dpw']});
 
   const buildServices = () => {
@@ -217,7 +218,7 @@ function Panel(props) {
         </fieldset>
         <fieldset>
         <button type="submit">Send</button>
-        <button type="clear">Clear</button>
+        <button type="reset">Clear</button>
         </fieldset>
         </form>
         break;
@@ -244,12 +245,11 @@ function Panel(props) {
                     <option value="ar">Arabic</option>
                     <option value="bn">Bengal</option>
                 </select>
-                <label htmlFor="address" className="required-field">Address</label>
-                <input type="text" id="address" name="address" placeholder="Ex. 1300 3rd st" aria-describedby="Address of subscriber." onChange={handleChange}></input>
             </fieldset>
+            <Geocoder state={{ address: [address, setAddress] }}></Geocoder>
             <fieldset>
                 <button type="submit">Send</button>
-                <button type="clear">Clear</button>
+                <button type="reset">Clear</button>
             </fieldset>
         </form>
         break;
