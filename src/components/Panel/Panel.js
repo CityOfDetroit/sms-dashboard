@@ -3,22 +3,22 @@ import './Panel.scss';
 import Connector from '../Connector/Connector';
 import Geocoder from '../Geocoder/Geocoder';
 import data from '../../data/App.data.json';
-// Disable translation due to module bug
-// import token from '../../../private/token.json';
+import token from '../../../private/token.json';
 
 function Panel(props) {
   // Declare a new state variables
-  const [service, setService]       = useState();
-  const [filters, setFilters]       = useState();
-  const [message, setMessage]       = useState();
-  const [date, setDate]             = useState();
-  const [spMessage, setspMessage]   = useState();
-  const [arMessage, setarMessage]   = useState();
-  const [bnMessage, setbnMessage]   = useState();
-  const [phone, setPhone]           = useState();
-  const [lang, setLang]             = useState();
-  const [address, setAddress]       = useState('1301 3rd Ave');
-  const [user, setUser]             = useState({'id': 'edgar', 'permissions': ['census', 'dpw']});
+  const [service, setService]           = useState();
+  const [filters, setFilters]           = useState();
+  const [message, setMessage]           = useState();
+  const [date, setDate]                 = useState();
+  const [spMessage, setspMessage]       = useState();
+  const [arMessage, setarMessage]       = useState();
+  const [bnMessage, setbnMessage]       = useState();
+  const [phone, setPhone]               = useState();
+  const [lang, setLang]                 = useState();
+  const [notification, setNotification] = useState();
+  const [address, setAddress]           = useState('1301 3rd Ave');
+  const [user, setUser]                 = useState(drupalSettings.intranet.intranetJs.user);
   const {
     loader: [loader, setLoader]
   } = {
@@ -41,7 +41,6 @@ function Panel(props) {
       
       case 'date':
         let tempDate = ev.target.value.replace(/-/g, '/');
-        console.log(tempDate);
         setDate(tempDate);
         break;
 
@@ -74,6 +73,10 @@ function Panel(props) {
         setLang(ev.target.value);
         break;
 
+      case 'notification':
+        setNotification(undefined);
+        break;
+
       case 'msg-form':
         ev.preventDefault();
         setLoader('active'); 
@@ -82,6 +85,7 @@ function Panel(props) {
           "day": date
         };
         Connector.start('post','https://apis.detroitmi.gov/messenger/notifications/', param, (e)=>{(e.status >= 200 && e.status < 300) ? createNewMessage(e) : errorPost(e)}, (e)=>{errorPost(e)});
+        ev.target.reset();
         break;
     
       case 'num-form':
@@ -93,6 +97,7 @@ function Panel(props) {
         };
         (address) ? param['address'] = address : '';
         Connector.start('post',`https://apis.detroitmi.gov/messenger/clients/${filters.groups}/subscribe/`, param, (e)=>{(e.status >= 200 && e.status < 300) ? successPost(e) : errorPost(e)}, (e)=>{errorPost(e)});
+        ev.target.reset();
         break;
     
       default:
@@ -109,28 +114,11 @@ function Panel(props) {
 
   const createNewMessage = (resp) => {
     resp.json().then(data =>{
-        console.log(data);
         data.clients.forEach((client) => {
-            switch (true) {
-                case message != undefined:
-                    sendMessage(client, 'en', message);
-                    break;
-
-                case spMessage != undefined:
-                    sendMessage(client, 'es', spMessage);
-                    break;
-
-                case arMessage != undefined:
-                    sendMessage(client, 'ar', arMessage);
-                    break;
-
-                case bnMessage != undefined:
-                    sendMessage(client, 'bn', bnMessage);
-                    break;
-            
-                default:
-                    break;
-            }
+            (message != undefined) ? sendMessage(client, 'en', message) : errorPost('Empty Message');
+            (spMessage != undefined) ? sendMessage(client, 'es', spMessage) : '';
+            (arMessage != undefined) ? sendMessage(client, 'ar', arMessage) : '';
+            (bnMessage != undefined) ? sendMessage(client, 'bn', bnMessage) : '';
         });
     })
     .catch((error) => {
@@ -139,7 +127,6 @@ function Panel(props) {
   }
 
   const sendMessage = (client, language, msg) => {
-    console.log(`sending message: ${msg}`);
     let param = {
         "lang": language,
         "message": msg
@@ -149,11 +136,22 @@ function Panel(props) {
 
   const successPost = (id) => {
     setLoader('');
+    if(message != undefined){
+        clearForm('msg-form');
+        setNotification({type: 'succ', msg: 'Your message has been created.'});
+    }else{
+        clearForm('num-form');
+        setNotification({type: 'succ', msg: 'The number has been subscribed to the list.'});
+    }
+  }
+
+  const buildNotification = () => {
+    return (notification != undefined) ? <p id="notification" className={notification.type} onClick={handleChange} aria-describedby="Notification of request status. Please click to close.">{notification.msg}</p> : '';
   }
 
   const errorPost = (e) => {
     setLoader('');
-    console.log(id);
+    console.log(e);
   }
 
   const buildGroupFilters = () => {
@@ -186,7 +184,7 @@ function Panel(props) {
         break;
 
       case 'select':
-        markup = <fieldset><label htmlFor={filter.id} className="required-field">{filter.name}</label><select id={filter.id} className="sms-filters" aria-describedby={filter.description} aria-required="true" required onChange={handleChange}>{buildStaticValue(filter, null, 'select')}</select></fieldset>;
+        markup = <fieldset key={filter.id}><label htmlFor={filter.id} className="required-field">{filter.name}</label><select id={filter.id} className="sms-filters" aria-describedby={filter.description} aria-required="true" required onChange={handleChange}>{buildStaticValue(filter, null, 'select')}</select></fieldset>;
         break;
     
       default:
@@ -207,8 +205,8 @@ function Panel(props) {
         break;
         
       case 'select':
-        markup = filter.values.map((value) =>
-          <option key={value.id} value={value.value}>{value.name}</option>
+        markup = filter.values.map((item,) =>
+        <option key={item.id} value={item.value}>{item.name}</option>
         );
         break;
     
@@ -249,7 +247,8 @@ function Panel(props) {
   }
 
   const clearForm = (ev) =>{
-    switch (ev.target.parentElement.parentElement.id) {
+    let id = (ev.target != undefined) ? id = ev.target.parentElement.parentElement.id : id = ev;
+    switch (id) {
         case 'msg-form':
             setService(undefined);
             setFilters(undefined);
@@ -376,7 +375,7 @@ function Panel(props) {
         <fieldset>
           <label htmlFor="en-msg" className="required-field">Message (Eng)</label>
           <textarea id="en-msg" type="text" aria-describedby="Message that users will receive." aria-required="true" required onChange={handleChange}></textarea>
-          {/* <span onClick={translateTxt}><i className="fas fa-language"></i> Translate</span>  */}
+          <span onClick={translateTxt}><i className="fas fa-language"></i> Translate</span> 
           <label htmlFor="sp-msg">Spanish Translation</label>
           <textarea id="sp-msg" value={getTranslation('sp')} type="text" aria-describedby="Message that spanish speaking users will receive." onChange={handleChange}></textarea>
           <label htmlFor="ar-msg">Arabic Translation</label>
@@ -387,6 +386,9 @@ function Panel(props) {
         <fieldset>
         <button type="submit">Send</button>
         <button type="reset" onClick={clearForm}>Clear</button>
+        </fieldset>
+        <fieldset>
+            {buildNotification()}
         </fieldset>
         </form>
         break;
@@ -418,6 +420,9 @@ function Panel(props) {
             <fieldset>
                 <button type="submit">Send</button>
                 <button type="reset" onClick={clearForm}>Clear</button>
+            </fieldset>
+            <fieldset>
+                {buildNotification()}
             </fieldset>
         </form>
         break;

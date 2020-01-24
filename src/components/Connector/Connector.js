@@ -14,14 +14,14 @@ export default class Connector {
     });
   }
 
-  static start(type, url, data, success, error){
+  static start(type, url, data, success, fail){
     let request = (type == 'post') ? Connector.buildRequest(url, data) : url;
     fetch(request)
     .then((res) => {
         success(res);
     })
     .catch((error) => {
-        error(error);
+        fail(error);
     });
   }
 }

@@ -39,5 +39,20 @@ form{
             position: relative; 
             top: -.75em;
         }
+
+        #notification{
+            padding: 1em;
+            cursor: pointer;
+        }
+
+        #notification.succ{
+            background-color: $color-1;
+            color: $color-2;
+        }
+
+        #notification.err{
+            background-color: $color-4;
+            color: $white;
+        }
     }
 }
