@@ -336,6 +336,19 @@ function Panel(props) {
             <h2>Instructions</h2>
             <p>The following will describe how to navigate through the different screens as well as how to utilize each functionality.</p>
             <h3>Navigation</h3>
+            <p>Users can use the panel to jump to different screens which will provide diffent functionality. We will go over each one screen in detail on other sections.</p>
+            <ul>
+                <li><strong>Board:</strong> The Board section is the initial screen that you will see after launching the app. This screen displays your user information as well as credential information. Future functionality is mapped to come in the future.</li>
+                <li><strong>Message:</strong> The Message section as it's name describes provides a way for users to create messages that need to be send to their subscribers.
+                </li>
+            </ul>
+            <h3>Message creation</h3>
+            <ol>
+                <li><code>Service</code> - Users can select which service that will be used to send the message. The list of service options is determined by your account permissions. In most cases, users will only see on service which they can select. However, if you don't see the specific you are looking or you see services that should not be accessible to your account. Please contact the Web Team.</li>
+                <li><code>Filter</code> - After selecting a service, users will than be able to select from a list of filters. The list depends on the service previouly selected. These filters help send a more targeted message if need. If users need to send a message to all subscribers just select "Everyone."</li>
+                <li><code>Date</code> - The date field specifies when the message will go out. If reacurring message needs to be created, please contanct the Web Team for more assistance.</li>
+            </ol>
+            <h3>Add a number</h3>
             <h2>Q&A</h2>
         </article>
         break;
@@ -362,7 +375,7 @@ function Panel(props) {
         <fieldset>
           <label htmlFor="en-msg" className="required-field">Message (Eng)</label>
           <textarea id="en-msg" type="text" aria-describedby="Message that users will receive." aria-required="true" required onChange={handleChange}></textarea>
-          <span onClick={translateTxt}><i className="fas fa-language"></i> Translate</span> 
+          {/* <span onClick={translateTxt}><i className="fas fa-language"></i> Translate</span>  */}
           <label htmlFor="sp-msg">Spanish Translation</label>
           <textarea id="sp-msg" value={getTranslation('sp')} type="text" aria-describedby="Message that spanish speaking users will receive." onChange={handleChange}></textarea>
           <label htmlFor="ar-msg">Arabic Translation</label>
