@@ -150,7 +150,7 @@ function Panel(props) {
     setLoader('');
   }
 
-  const errorPost = (id) => {
+  const errorPost = (e) => {
     setLoader('');
     console.log(id);
   }
@@ -318,10 +318,25 @@ function Panel(props) {
   const buildPanel = () => {
     let markup;
     switch (props.type) {
-      case 'home':
+      case 'board':
         markup = <article>
             <h1>Welcome to the City of Detroit SMS Dashboard</h1>
+            <div id="user-info">
+            <i class="far fa-user-circle"></i>
             <p>Hi {user.id}!</p>
+            </div>
+        </article>
+        break;
+
+      case 'info':
+        markup = <article>
+            <h1>Info, Instructions & QA</h1>
+            <h2>Info</h2>
+            <p>The SMS Dashboard provides an intrective way for users to add subscribers to their list as well as create, edit and schedule SMS blasts.</p>
+            <h2>Instructions</h2>
+            <p>The following will describe how to navigate through the different screens as well as how to utilize each functionality.</p>
+            <h3>Navigation</h3>
+            <h2>Q&A</h2>
         </article>
         break;
         

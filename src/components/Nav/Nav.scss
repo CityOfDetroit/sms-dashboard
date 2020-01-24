@@ -2,7 +2,7 @@
 @import "../../../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
 
 nav{
-    width: 20em;
+    width: 12em;
     max-width: 100%;
     background-color: $color-1;
     color: $white;
@@ -44,6 +44,18 @@ nav{
 
         li:first-child{
             border-top: none;
+            background-color: $white;
+
+            a{
+                width: 100%;
+                display: flex;
+
+                img{
+                    margin: auto;
+                    padding: .25em;
+                    width: 40%;
+                }
+            }
         }
 
         li:last-child{

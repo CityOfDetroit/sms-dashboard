@@ -5,7 +5,7 @@ import Panel from '../Panel/Panel';
 import Loader from '../Loader/Loader';
 
 function App() {
-  const [nav, setNav]       = useState('home');
+  const [nav, setNav]       = useState('board');
   const [loader, setLoader] = useState('');
 
   return (
