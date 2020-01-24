@@ -16,12 +16,12 @@
                         {
                             "name"  : "--- Please select group list ---",
                             "value" : "",
-                            "key"   : "groups-0"
+                            "id"   : "cencus-filter-0-0"
                         },
                         {
                             "name" : "Everyone",
                             "value": "4",
-                            "key"   : "groups-1"
+                            "id"   : "census-filter-0-1"
                         }
                     ]
                 }

@@ -3,7 +3,8 @@ import './Panel.scss';
 import Connector from '../Connector/Connector';
 import Geocoder from '../Geocoder/Geocoder';
 import data from '../../data/App.data.json';
-import token from '../../../private/token.json';
+// Disable translation due to module bug
+// import token from '../../../private/token.json';
 
 function Panel(props) {
   // Declare a new state variables
@@ -207,7 +208,7 @@ function Panel(props) {
         
       case 'select':
         markup = filter.values.map((value) =>
-          <option key={value.key} value={value.value}>{value.name}</option>
+          <option key={value.id} value={value.value}>{value.name}</option>
         );
         break;
     
@@ -322,7 +323,7 @@ function Panel(props) {
         markup = <article>
             <h1>Welcome to the City of Detroit SMS Dashboard</h1>
             <div id="user-info">
-            <i class="far fa-user-circle"></i>
+            <i className="far fa-user-circle"></i>
             <p>Hi {user.id}!</p>
             </div>
         </article>

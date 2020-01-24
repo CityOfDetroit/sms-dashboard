@@ -30,10 +30,10 @@ function Nav(props) {
       <nav>
         <ul>
           <li><a href={getHomePage()}><img src={logo} alt="City of Detroit"></img></a></li>
-          <li><button className={getButtonClass('board')} onClick={() => setNav('board')}><i class="fas fa-tachometer-alt"></i> BOARD</button></li>
+          <li><button className={getButtonClass('board')} onClick={() => setNav('board')}><i className="fas fa-tachometer-alt"></i> BOARD</button></li>
           <li><button className={getButtonClass('msg')}  onClick={() => setNav('msg')}><i className="fas fa-sms"></i> MESSAGE</button></li>
           <li><button className={getButtonClass('num')}  onClick={() => setNav('num')}><i className="fas fa-mobile-alt"></i> NUMBER +</button></li>
-          <li><button className={getButtonClass('info')}  onClick={() => setNav('info')}><i class="far fa-question-circle"></i> INFO</button></li>
+          <li><button className={getButtonClass('info')}  onClick={() => setNav('info')}><i className="far fa-question-circle"></i> INFO</button></li>
         </ul>
       </nav>
   );
