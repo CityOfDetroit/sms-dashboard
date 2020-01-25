@@ -3,7 +3,6 @@ import './Panel.scss';
 import Connector from '../Connector/Connector';
 import Geocoder from '../Geocoder/Geocoder';
 import data from '../../data/App.data.json';
-import token from '../../../private/token.json';
 
 function Panel(props) {
   // Declare a new state variables
@@ -276,7 +275,7 @@ function Panel(props) {
     setLoader('active');
     let param = {
         "text": message,
-        "auth_token": token.token 
+        "auth_token": drupalSettings.intranet.intranetJs.token
     }
     Connector.start('post', 'https://apis.detroitmi.gov/website_data/translations/', param, (e)=>{(e.status >= 200 && e.status < 300) ? loadTranslations(e) : errorPost(e)}, (e)=>{errorPost(e)});
   }

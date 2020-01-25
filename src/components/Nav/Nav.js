@@ -10,8 +10,6 @@ function Nav(props) {
     ...(props.state || {})
   };
 
-  const logo = require('../../img/logo.png');
-
   const getButtonClass = (btn) => {
     let status;
     if(btn == nav){
@@ -29,7 +27,7 @@ function Nav(props) {
   return (
       <nav>
         <ul>
-          <li><a href={getHomePage()}><img src={logo} alt="City of Detroit"></img></a></li>
+          <li><a href={getHomePage()}><img src="/docroot/themes/custom/intranet/logo.svg" alt="City of Detroit"></img></a></li>
           <li><button className={getButtonClass('board')} onClick={() => setNav('board')}><i className="fas fa-tachometer-alt"></i> BOARD</button></li>
           <li><button className={getButtonClass('msg')}  onClick={() => setNav('msg')}><i className="fas fa-sms"></i> MESSAGE</button></li>
           <li><button className={getButtonClass('num')}  onClick={() => setNav('num')}><i className="fas fa-mobile-alt"></i> NUMBER +</button></li>
